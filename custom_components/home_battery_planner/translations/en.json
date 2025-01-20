@@ -1,0 +1,17 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "title": "Set up Battery Planner",
+                "description": "Please enter your Battery Planner credentials",
+                "data": {
+                    "system_id": "System ID",
+                    "api_token": "API Token"
+                }
+            }
+        },
+        "error": {
+            "auth": "Authentication failed. Please check your credentials."
+        }
+    }
+}

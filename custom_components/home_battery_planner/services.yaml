@@ -1,0 +1,28 @@
+create_plan:
+  name: Create Battery Plan
+  description: Create a new battery charge/discharge plan
+  fields:
+    power_kw:
+      name: Power Values
+      description: List of power values in kW
+      required: true
+      example: "[1.5, 2.0, 1.8]"
+      selector:
+        object:
+    battery_current_soc:
+      name: Current Battery SOC
+      description: Current state of charge of the battery (0-100)
+      required: true
+      example: "50.0"
+      selector:
+        number:
+          min: 0
+          max: 100
+          step: 0.1
+    allow_export:
+      name: Allow Export
+      description: Whether to allow power export in the plan
+      required: true
+      example: "false"
+      selector:
+        boolean:
