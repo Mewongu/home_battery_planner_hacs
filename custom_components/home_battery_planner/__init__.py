@@ -8,10 +8,12 @@ import aiohttp
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.typing import ConfigType
+from homeassistant.helpers.device_registry import async_get as async_get_device_registry
+from homeassistant.helpers.entity_registry import async_get as async_get_entity_registry
 
 from .const import DOMAIN, DEFAULT_BASE_URL
 
@@ -48,7 +50,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             f"Failed to connect to Battery Planner: {err}"
         ) from err
 
-    # Store the session and configuration for use by the platforms
+    # Store the session and configuration
     hass.data[DOMAIN][entry.entry_id] = {
         "session": session,
         "api_token": api_token,
@@ -56,8 +58,31 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         "system_id": entry.data["system_id"],
     }
 
+    @callback
+    def find_coordinator_by_device_id(device_id: str):
+        """Find the coordinator for a given device ID."""
+        device_registry = async_get_device_registry(hass)
+        entity_registry = async_get_entity_registry(hass)
+
+        # Get all entities for this device
+        entity_entries = async_get_entity_registry(hass).entities.values()
+        device_entities = [
+            entry for entry in entity_entries
+            if entry.device_id == device_id
+        ]
+
+        # Find the coordinator from any of the device's entities
+        for entity_entry in device_entities:
+            if entity_entry.platform == DOMAIN:
+                entry_id = entity_entry.config_entry_id
+                if entry_id and entry_id in hass.data[DOMAIN]:
+                    return hass.data[DOMAIN][entry_id].get("coordinator")
+
+        return None
+
     async def create_battery_plan(call):
         """Handle the service call and return the plan as response data."""
+        _LOGGER.debug("Service called with data: %s", call.data)
         power_kw = call.data["power_kw"]
         battery_current_soc = call.data["battery_current_soc"]
         allow_export = call.data["allow_export"]
@@ -82,8 +107,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             ) as resp:
                 if resp.status == 200:
                     result = await resp.json()
+                    _LOGGER.debug("Received API response: %s", result)
 
-                    # Create response data
                     response_data = {
                         "baseline_cost": float(result["baseline_cost"]),
                         "optimized_cost": float(result["optimized_cost"]),
@@ -91,15 +116,14 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
                         "success": True
                     }
 
-                    # Update coordinator data if requested
                     if update_sensors:
-                        coordinator = hass.data[DOMAIN][entry.entry_id].get("coordinator")
-                        if coordinator:
-                            coordinator._data = result
-                            await coordinator.async_refresh()
-                            _LOGGER.debug("Sensors updated with new plan data")
+                        # Use the stored update callback to update the sensors
+                        update_callback = hass.data[DOMAIN][entry.entry_id].get("update_callback")
+                        if update_callback:
+                            _LOGGER.debug("Updating sensors with new data")
+                            update_callback(result)
                         else:
-                            _LOGGER.warning("Coordinator not found, sensors not updated")
+                            _LOGGER.warning("Update callback not found")
 
                     return response_data
 
@@ -117,9 +141,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             return {
                 "success": False,
                 "error": f"Error creating battery plan: {str(err)}"
-            }
-
-    # Register our service with response support
+            }    # Register service with response support
     hass.services.async_register(DOMAIN, "create_plan", create_battery_plan, supports_response=True)
 
     # Set up platforms

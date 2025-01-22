@@ -7,6 +7,3 @@ DEFAULT_BASE_URL = "https://bp.stenite.com"
 SENSOR_BATTERY_PLAN = "battery_plan"
 SENSOR_BATTERY_PLAN_COST_DELTA = "battery_plan_cost_delta"
 SENSOR_BATTERY_PLAN_ACTION = "battery_plan_action"
-
-# Update interval in seconds (5 minutes)
-UPDATE_INTERVAL = 300
