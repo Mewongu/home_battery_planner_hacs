@@ -1,0 +1,46 @@
+{
+  "baseline_cost": "155.03312",
+  "optimized_cost": "113.20588",
+  "schedule": [
+    {
+      "action": {
+        "name": "charge",
+        "power": "0.9"
+      },
+      "cost": {
+        "baseline": "3.21347",
+        "optimized": "4.37032"
+      },
+      "price": {
+        "export": "0.35151",
+        "import": "1.2853875"
+      },
+      "soc": {
+        "delta": "0",
+        "end": "55.0561800",
+        "start": "50.0"
+      },
+      "time": "2025-01-21T22:00:00+00:00"
+    },
+    {
+      "action": {
+        "name": "idle",
+        "power": "0"
+      },
+      "cost": {
+        "baseline": "3.32125",
+        "optimized": "3.32125"
+      },
+      "price": {
+        "export": "0.386",
+        "import": "1.32850"
+      },
+      "soc": {
+        "delta": "0",
+        "end": "55.0561800",
+        "start": "55.0561800"
+      },
+      "time": "2025-01-21T23:00:00+00:00"
+    }
+  ]
+}

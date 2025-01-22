@@ -1,0 +1,25 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "data": {
+                    "api_token": "API Token",
+                    "system_id": "System ID",
+                    "base_url": "Base URL",
+                    "power_kw": "Power Values (comma-separated list of numbers in kW)",
+                    "battery_current_soc": "Current Battery State of Charge (%)",
+                    "allow_export": "Allow Export"
+                }
+            }
+        },
+        "error": {
+            "cannot_connect": "Failed to connect",
+            "invalid_auth": "Invalid authentication",
+            "invalid_power_kw": "Invalid power values format. Please provide comma-separated numbers",
+            "unknown": "Unexpected error"
+        },
+        "abort": {
+            "already_configured": "Device is already configured"
+        }
+    }
+}

@@ -1,9 +1,12 @@
-from typing import Final
+"""Constants for the Battery Planner integration."""
 
-DOMAIN: Final = "battery_planner"
-CONF_SYSTEM_ID: Final = "system_id"
-CONF_API_TOKEN: Final = "api_token"
+DOMAIN = "battery_planner"
+DEFAULT_BASE_URL = "https://bp.stenite.com"
 
-BASE_API_URL: Final = "https://bp.stenite.com/api"
-AUTH_API_URL: Final = f"{BASE_API_URL}/auth/api/validate-token"
-PLAN_API_URL: Final = f"{BASE_API_URL}/battery_planner/{{system_id}}/plan"
+# Sensor names
+SENSOR_BATTERY_PLAN = "battery_plan"
+SENSOR_BATTERY_PLAN_COST_DELTA = "battery_plan_cost_delta"
+SENSOR_BATTERY_PLAN_ACTION = "battery_plan_action"
+
+# Update interval in seconds (5 minutes)
+UPDATE_INTERVAL = 300

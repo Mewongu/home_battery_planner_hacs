@@ -1,6 +1,61 @@
+# Service definitions for Battery Planner integration
 create_plan:
   name: Create Battery Plan
   description: Create a new battery charge/discharge plan
+  target: {}  # No target needed as this is a global service
+  response:
+    success:
+      name: Success
+      description: Whether the operation was successful
+      example: true
+      selector:
+        boolean:
+    baseline_cost:
+      name: Baseline Cost
+      description: The baseline cost without optimization
+      example: 155.03312
+      selector:
+        number:
+    optimized_cost:
+      name: Optimized Cost
+      description: The optimized cost with the battery plan
+      example: 113.20588
+      selector:
+        number:
+    schedule:
+      name: Schedule
+      description: The detailed schedule of battery actions
+      example: >
+        [
+          {
+            "action": {
+              "name": "charge",
+              "power": 0.9
+            },
+            "cost": {
+              "baseline": 3.21347,
+              "optimized": 4.37032
+            },
+            "price": {
+              "export": 0.35151,
+              "import": 1.2853875
+            },
+            "soc": {
+              "delta": 0,
+              "end": 55.0561800,
+              "start": 50.0
+            },
+            "time": "2025-01-21T22:00:00+00:00"
+          }
+        ]
+      selector:
+        object:
+    error:
+      name: Error
+      description: Error message if the operation failed
+      example: "Failed to create battery plan: HTTP 404"
+      selector:
+        text:
   fields:
     power_kw:
       name: Power Values
@@ -24,5 +79,13 @@ create_plan:
       description: Whether to allow power export in the plan
       required: true
       example: "false"
+      selector:
+        boolean:
+    update_sensors:
+      name: Update Sensors
+      description: Whether to update the integration's sensors with the new plan
+      required: false
+      default: true
+      example: "true"
       selector:
         boolean:

@@ -1,17 +1,41 @@
 {
     "config": {
+        "title": "Battery Planner",
         "step": {
             "user": {
-                "title": "Set up Battery Planner",
-                "description": "Please enter your Battery Planner credentials",
+                "title": "Add Battery Planner",
+                "description": "Set up a Battery Planner instance",
                 "data": {
+                    "api_token": "API Token",
                     "system_id": "System ID",
-                    "api_token": "API Token"
+                    "base_url": "Base URL",
+                    "power_kw": "Power Values (kW)",
+                    "battery_current_soc": "Current Battery SOC (%)",
+                    "allow_export": "Allow Export"
                 }
             }
         },
         "error": {
-            "auth": "Authentication failed. Please check your credentials."
+            "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
+            "invalid_auth": "[%key:common::config_flow::error::invalid_auth%]",
+            "invalid_power_kw": "Invalid power values format. Please provide comma-separated numbers",
+            "unknown": "[%key:common::config_flow::error::unknown%]"
+        },
+        "abort": {
+            "already_configured": "[%key:common::config_flow::abort::already_configured_device%]"
+        }
+    },
+    "entity": {
+        "sensor": {
+            "battery_plan": {
+                "name": "Battery Plan"
+            },
+            "battery_plan_cost_delta": {
+                "name": "Cost Delta"
+            },
+            "battery_plan_action": {
+                "name": "Action"
+            }
         }
     }
 }
