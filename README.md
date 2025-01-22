@@ -53,13 +53,15 @@ This integration provides a service to create battery charge/discharge plans. Yo
 #### Example Service Call (YAML)
 
 ```yaml
-service: home_battery_planner.create_plan
+action: battery_planner.create_plan
 data:
-  system_id: "my-system-id"
-  api_token: "my-api-token"
-  power_kw: [1.5, 2.0, 1.8]
-  battery_current_soc: 50.0
+  power_kw:
+    - {{ state_attr('sensor.my_mean_consumption_in_kw') | float }}
+  battery_current_soc: {{ state_attr('sensor.my_battery_soc') | float }}
   allow_export: false
+  update_sensors: true
+target:
+  device_id: <configured_device_id>
 ```
 
 #### Example Service Call (UI)
